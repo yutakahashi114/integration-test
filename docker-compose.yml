@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  app:
+    build:
+      context: ./
+    depends_on:
+      - db
+    working_dir: /app
+    command: ["realize", "start"]
+    volumes:
+      - .:/app
+    environment:
+      POSTGRES_USER: develop
+      POSTGRES_PASSWORD: develop
+      POSTGRES_DB_NAME: app
+      POSTGRES_TEST_DB_NAME: test
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      PORT: 80
+  db:
+    image: postgres:11.9
+    environment:
+      POSTGRES_PASSWORD: develop
+      POSTGRES_USER: develop
+      POSTGRES_DB: app
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d
+      - ./postgres/data:/var/lib/postgresql/data
+
