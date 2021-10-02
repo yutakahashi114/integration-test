@@ -1,7 +1,6 @@
-
 openapi: 3.0.0
 info:
-  description: "スキーマ"
+  description: "schema"
   version: "1.0.0"
   title: "integration test"
   contact:
@@ -119,11 +118,6 @@ paths:
           description: Internal Server Error
 
 components:
-  # securitySchemes:
-  #   Bearer:
-  #     type: http
-  #     scheme: bearer
-  #     description: Credentials or access token for API
   schemas:
     ID:
       title: ID
