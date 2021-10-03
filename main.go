@@ -45,7 +45,7 @@ type Controller struct {
 	*gorm.DB
 }
 
-func (c Controller) GetUsers(w http.ResponseWriter, r *http.Request) {
+func (c Controller) FindUsers(w http.ResponseWriter, r *http.Request) {
 	users := []User{}
 	err := c.DB.Order("id ASC").Find(&users).Error
 	if err != nil {
@@ -65,7 +65,7 @@ func (c Controller) GetUsers(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, us)
 }
 
-func (c Controller) FindUserByID(w http.ResponseWriter, r *http.Request, id int64) {
+func (c Controller) GetUserByID(w http.ResponseWriter, r *http.Request, id int64) {
 	user := User{}
 	err := c.DB.Where("id = ?", id).First(&user).Error
 	if err != nil {

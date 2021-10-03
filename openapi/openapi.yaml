@@ -18,7 +18,7 @@ paths:
     get:
       tags:
         - user
-      operationId: GetUsers
+      operationId: FindUsers
       summary: 全ユーザー取得
       description: 全ユーザー取得
       responses:
@@ -56,7 +56,7 @@ paths:
     get:
       tags:
         - user
-      operationId: FindUserByID
+      operationId: GetUserByID
       summary: 指定したIDのユーザー取得
       description: 指定したIDのユーザー取得
       parameters:

@@ -120,8 +120,8 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// GetUsers request
-	GetUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// FindUsers request
+	FindUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateUser request with any body
 	CreateUserWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -131,8 +131,8 @@ type ClientInterface interface {
 	// DeleteUser request
 	DeleteUser(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// FindUserByID request
-	FindUserByID(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetUserByID request
+	GetUserByID(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateUser request with any body
 	UpdateUserWithBody(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -140,8 +140,8 @@ type ClientInterface interface {
 	UpdateUser(ctx context.Context, id int64, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetUsersRequest(c.Server)
+func (c *Client) FindUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFindUsersRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -188,8 +188,8 @@ func (c *Client) DeleteUser(ctx context.Context, id int64, reqEditors ...Request
 	return c.Client.Do(req)
 }
 
-func (c *Client) FindUserByID(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFindUserByIDRequest(c.Server, id)
+func (c *Client) GetUserByID(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUserByIDRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -224,8 +224,8 @@ func (c *Client) UpdateUser(ctx context.Context, id int64, body UpdateUserJSONRe
 	return c.Client.Do(req)
 }
 
-// NewGetUsersRequest generates requests for GetUsers
-func NewGetUsersRequest(server string) (*http.Request, error) {
+// NewFindUsersRequest generates requests for FindUsers
+func NewFindUsersRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -325,8 +325,8 @@ func NewDeleteUserRequest(server string, id int64) (*http.Request, error) {
 	return req, nil
 }
 
-// NewFindUserByIDRequest generates requests for FindUserByID
-func NewFindUserByIDRequest(server string, id int64) (*http.Request, error) {
+// NewGetUserByIDRequest generates requests for GetUserByID
+func NewGetUserByIDRequest(server string, id int64) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -449,8 +449,8 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// GetUsers request
-	GetUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUsersResponse, error)
+	// FindUsers request
+	FindUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FindUsersResponse, error)
 
 	// CreateUser request with any body
 	CreateUserWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateUserResponse, error)
@@ -460,8 +460,8 @@ type ClientWithResponsesInterface interface {
 	// DeleteUser request
 	DeleteUserWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*DeleteUserResponse, error)
 
-	// FindUserByID request
-	FindUserByIDWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*FindUserByIDResponse, error)
+	// GetUserByID request
+	GetUserByIDWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetUserByIDResponse, error)
 
 	// UpdateUser request with any body
 	UpdateUserWithBodyWithResponse(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error)
@@ -469,14 +469,14 @@ type ClientWithResponsesInterface interface {
 	UpdateUserWithResponse(ctx context.Context, id int64, body UpdateUserJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateUserResponse, error)
 }
 
-type GetUsersResponse struct {
+type FindUsersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]User
 }
 
 // Status returns HTTPResponse.Status
-func (r GetUsersResponse) Status() string {
+func (r FindUsersResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -484,7 +484,7 @@ func (r GetUsersResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetUsersResponse) StatusCode() int {
+func (r FindUsersResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -534,14 +534,14 @@ func (r DeleteUserResponse) StatusCode() int {
 	return 0
 }
 
-type FindUserByIDResponse struct {
+type GetUserByIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *User
 }
 
 // Status returns HTTPResponse.Status
-func (r FindUserByIDResponse) Status() string {
+func (r GetUserByIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -549,7 +549,7 @@ func (r FindUserByIDResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r FindUserByIDResponse) StatusCode() int {
+func (r GetUserByIDResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -577,13 +577,13 @@ func (r UpdateUserResponse) StatusCode() int {
 	return 0
 }
 
-// GetUsersWithResponse request returning *GetUsersResponse
-func (c *ClientWithResponses) GetUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUsersResponse, error) {
-	rsp, err := c.GetUsers(ctx, reqEditors...)
+// FindUsersWithResponse request returning *FindUsersResponse
+func (c *ClientWithResponses) FindUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*FindUsersResponse, error) {
+	rsp, err := c.FindUsers(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetUsersResponse(rsp)
+	return ParseFindUsersResponse(rsp)
 }
 
 // CreateUserWithBodyWithResponse request with arbitrary body returning *CreateUserResponse
@@ -612,13 +612,13 @@ func (c *ClientWithResponses) DeleteUserWithResponse(ctx context.Context, id int
 	return ParseDeleteUserResponse(rsp)
 }
 
-// FindUserByIDWithResponse request returning *FindUserByIDResponse
-func (c *ClientWithResponses) FindUserByIDWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*FindUserByIDResponse, error) {
-	rsp, err := c.FindUserByID(ctx, id, reqEditors...)
+// GetUserByIDWithResponse request returning *GetUserByIDResponse
+func (c *ClientWithResponses) GetUserByIDWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetUserByIDResponse, error) {
+	rsp, err := c.GetUserByID(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseFindUserByIDResponse(rsp)
+	return ParseGetUserByIDResponse(rsp)
 }
 
 // UpdateUserWithBodyWithResponse request with arbitrary body returning *UpdateUserResponse
@@ -638,15 +638,15 @@ func (c *ClientWithResponses) UpdateUserWithResponse(ctx context.Context, id int
 	return ParseUpdateUserResponse(rsp)
 }
 
-// ParseGetUsersResponse parses an HTTP response from a GetUsersWithResponse call
-func ParseGetUsersResponse(rsp *http.Response) (*GetUsersResponse, error) {
+// ParseFindUsersResponse parses an HTTP response from a FindUsersWithResponse call
+func ParseFindUsersResponse(rsp *http.Response) (*FindUsersResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer rsp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetUsersResponse{
+	response := &FindUsersResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -706,15 +706,15 @@ func ParseDeleteUserResponse(rsp *http.Response) (*DeleteUserResponse, error) {
 	return response, nil
 }
 
-// ParseFindUserByIDResponse parses an HTTP response from a FindUserByIDWithResponse call
-func ParseFindUserByIDResponse(rsp *http.Response) (*FindUserByIDResponse, error) {
+// ParseGetUserByIDResponse parses an HTTP response from a GetUserByIDWithResponse call
+func ParseGetUserByIDResponse(rsp *http.Response) (*GetUserByIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer rsp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &FindUserByIDResponse{
+	response := &GetUserByIDResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

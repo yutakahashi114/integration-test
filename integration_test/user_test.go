@@ -38,7 +38,7 @@ func Test_User(t *testing.T) {
 	}
 	// ユーザー一覧取得
 	{
-		res, err := client.GetUsersWithResponse(ctx)
+		res, err := client.FindUsersWithResponse(ctx)
 		assert.NoError(t, err)
 		assertStatusCode(t, 200, res)
 		want := &[]openapi.User{
@@ -50,7 +50,7 @@ func Test_User(t *testing.T) {
 	}
 	// ユーザー取得
 	{
-		res, err := client.FindUserByIDWithResponse(ctx, 1)
+		res, err := client.GetUserByIDWithResponse(ctx, 1)
 		assert.NoError(t, err)
 		assertStatusCode(t, 200, res)
 		want := &openapi.User{Id: 1, Name: "name1", Email: "email1"}
@@ -64,7 +64,7 @@ func Test_User(t *testing.T) {
 	}
 	// ユーザー取得
 	{
-		res, err := client.FindUserByIDWithResponse(ctx, 1)
+		res, err := client.GetUserByIDWithResponse(ctx, 1)
 		assert.NoError(t, err)
 		assertStatusCode(t, 200, res)
 		want := &openapi.User{Id: 1, Name: "name1_update", Email: "email1_update"}
@@ -78,7 +78,7 @@ func Test_User(t *testing.T) {
 	}
 	// ユーザー一覧取得
 	{
-		res, err := client.GetUsersWithResponse(ctx)
+		res, err := client.FindUsersWithResponse(ctx)
 		assert.NoError(t, err)
 		assertStatusCode(t, 200, res)
 		want := &[]openapi.User{

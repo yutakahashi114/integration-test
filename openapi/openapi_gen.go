@@ -46,7 +46,7 @@ type UpdateUserJSONRequestBody UpdateUserJSONBody
 type ServerInterface interface {
 	// 全ユーザー取得
 	// (GET /user)
-	GetUsers(w http.ResponseWriter, r *http.Request)
+	FindUsers(w http.ResponseWriter, r *http.Request)
 	// ユーザー作成
 	// (POST /user)
 	CreateUser(w http.ResponseWriter, r *http.Request)
@@ -55,7 +55,7 @@ type ServerInterface interface {
 	DeleteUser(w http.ResponseWriter, r *http.Request, id int64)
 	// 指定したIDのユーザー取得
 	// (GET /user/{id})
-	FindUserByID(w http.ResponseWriter, r *http.Request, id int64)
+	GetUserByID(w http.ResponseWriter, r *http.Request, id int64)
 	// 指定したIDのユーザー更新
 	// (PUT /user/{id})
 	UpdateUser(w http.ResponseWriter, r *http.Request, id int64)
@@ -69,14 +69,14 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
 
-// GetUsers operation middleware
-func (siw *ServerInterfaceWrapper) GetUsers(w http.ResponseWriter, r *http.Request) {
+// FindUsers operation middleware
+func (siw *ServerInterfaceWrapper) FindUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ctx = context.WithValue(ctx, BearerScopes, []string{""})
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetUsers(w, r)
+		siw.Handler.FindUsers(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -131,8 +131,8 @@ func (siw *ServerInterfaceWrapper) DeleteUser(w http.ResponseWriter, r *http.Req
 	handler(w, r.WithContext(ctx))
 }
 
-// FindUserByID operation middleware
-func (siw *ServerInterfaceWrapper) FindUserByID(w http.ResponseWriter, r *http.Request) {
+// GetUserByID operation middleware
+func (siw *ServerInterfaceWrapper) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -149,7 +149,7 @@ func (siw *ServerInterfaceWrapper) FindUserByID(w http.ResponseWriter, r *http.R
 	ctx = context.WithValue(ctx, BearerScopes, []string{""})
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.FindUserByID(w, r, id)
+		siw.Handler.GetUserByID(w, r, id)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -225,7 +225,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/user", wrapper.GetUsers)
+		r.Get(options.BaseURL+"/user", wrapper.FindUsers)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/user", wrapper.CreateUser)
@@ -234,7 +234,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Delete(options.BaseURL+"/user/{id}", wrapper.DeleteUser)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/user/{id}", wrapper.FindUserByID)
+		r.Get(options.BaseURL+"/user/{id}", wrapper.GetUserByID)
 	})
 	r.Group(func(r chi.Router) {
 		r.Put(options.BaseURL+"/user/{id}", wrapper.UpdateUser)
